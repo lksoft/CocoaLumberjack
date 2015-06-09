@@ -172,10 +172,12 @@ static unsigned int numProcessors;
 #endif
         
         if (notificationName) {
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(applicationWillTerminate:)
-                                                         name:notificationName
-                                                       object:nil];
+			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+				[[NSNotificationCenter defaultCenter] addObserver:[DDLog class]
+														 selector:@selector(applicationWillTerminate:)
+															 name:notificationName
+														   object:nil];
+			});
         }
         
     });
