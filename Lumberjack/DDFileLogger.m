@@ -593,7 +593,7 @@ BOOL doesAppRunInBackground(void);
         rollingFrequency = DEFAULT_LOG_ROLLING_FREQUENCY;
         
         logFileManager = aLogFileManager;
-        
+		
         formatter = [[DDLogFileFormatterDefault alloc] init];
     }
     return self;
@@ -750,8 +750,8 @@ BOOL doesAppRunInBackground(void);
         dispatch_source_cancel(rollingTimer);
         rollingTimer = NULL;
     }
-    
-    if (currentLogFileInfo == nil || rollingFrequency <= 0.0)
+	
+    if ([self currentLogFileInfo] == nil || rollingFrequency <= 0.0)
     {
         return;
     }
@@ -841,6 +841,8 @@ BOOL doesAppRunInBackground(void);
     [currentLogFileHandle synchronizeFile];
     [currentLogFileHandle closeFile];
     currentLogFileHandle = nil;
+	
+	[self currentLogFileInfo];
     
     currentLogFileInfo.isArchived = YES;
     
@@ -865,6 +867,7 @@ BOOL doesAppRunInBackground(void);
 
 - (void)maybeRollLogFileDueToAge
 {
+	[self currentLogFileInfo];
     if (rollingFrequency > 0.0 && currentLogFileInfo.age >= rollingFrequency)
     {
         NSLogVerbose(@"DDFileLogger: Rolling log file due to age...");
@@ -921,18 +924,16 @@ BOOL doesAppRunInBackground(void);
             
             BOOL shouldArchiveMostRecent = NO;
             
-            if (mostRecentLogFileInfo.isArchived)
-            {
-                shouldArchiveMostRecent = NO;
-            }
-            else if (maximumFileSize > 0 && mostRecentLogFileInfo.fileSize >= maximumFileSize)
-            {
+            if (maximumFileSize > 0 && mostRecentLogFileInfo.fileSize >= maximumFileSize) {
                 shouldArchiveMostRecent = YES;
             }
-            else if (rollingFrequency > 0.0 && mostRecentLogFileInfo.age >= rollingFrequency)
-            {
+            else if (rollingFrequency > 0.0 && mostRecentLogFileInfo.age >= rollingFrequency) {
                 shouldArchiveMostRecent = YES;
             }
+			else if (mostRecentLogFileInfo.isArchived) {
+				shouldArchiveMostRecent = NO;
+			}
+
 
 
         #if TARGET_OS_IPHONE
