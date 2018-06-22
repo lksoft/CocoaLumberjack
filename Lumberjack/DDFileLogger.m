@@ -627,7 +627,7 @@ BOOL doesAppRunInBackground(void);
     __block unsigned long long result;
     
     dispatch_block_t block = ^{
-        result = maximumFileSize;
+		result = self->maximumFileSize;
     };
     
     // The design of this method is taken from the DDAbstractLogger implementation.
@@ -646,7 +646,7 @@ BOOL doesAppRunInBackground(void);
     dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
     
     dispatch_sync(globalLoggingQueue, ^{
-        dispatch_sync(loggerQueue, block);
+		dispatch_sync(self->loggerQueue, block);
     });
     
     return result;
@@ -656,7 +656,7 @@ BOOL doesAppRunInBackground(void);
 {
     dispatch_block_t block = ^{ @autoreleasepool {
         
-        maximumFileSize = newMaximumFileSize;
+		self->maximumFileSize = newMaximumFileSize;
         [self maybeRollLogFileDueToSize];
         
     }};
@@ -677,7 +677,7 @@ BOOL doesAppRunInBackground(void);
     dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
     
     dispatch_async(globalLoggingQueue, ^{
-        dispatch_async(loggerQueue, block);
+		dispatch_async(self->loggerQueue, block);
     });
 }
 
@@ -686,7 +686,7 @@ BOOL doesAppRunInBackground(void);
     __block NSTimeInterval result;
     
     dispatch_block_t block = ^{
-        result = rollingFrequency;
+		result = self->rollingFrequency;
     };
     
     // The design of this method is taken from the DDAbstractLogger implementation.
@@ -705,7 +705,7 @@ BOOL doesAppRunInBackground(void);
     dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
     
     dispatch_sync(globalLoggingQueue, ^{
-        dispatch_sync(loggerQueue, block);
+		dispatch_sync(self->loggerQueue, block);
     });
     
     return result;
@@ -715,7 +715,7 @@ BOOL doesAppRunInBackground(void);
 {
     dispatch_block_t block = ^{ @autoreleasepool {
         
-        rollingFrequency = newRollingFrequency;
+		self->rollingFrequency = newRollingFrequency;
         [self maybeRollLogFileDueToAge];
     }};
     
@@ -735,7 +735,7 @@ BOOL doesAppRunInBackground(void);
     dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
     
     dispatch_async(globalLoggingQueue, ^{
-        dispatch_async(loggerQueue, block);
+		dispatch_async(self->loggerQueue, block);
     });
 }
 
@@ -826,7 +826,7 @@ BOOL doesAppRunInBackground(void);
         NSAssert(![self isOnGlobalLoggingQueue], @"Core architecture requirement failure");
         
         dispatch_async(globalLoggingQueue, ^{
-            dispatch_async(loggerQueue, block);
+			dispatch_async(self->loggerQueue, block);
         });
     }
 }
